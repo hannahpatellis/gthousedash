@@ -28,7 +28,7 @@ class Home extends Component {
                 </div>
                 <div className="row mx-5 mt-5">
                     {this.state.data ? this.state.data.map(item => (
-                        <div className="col-3">
+                        <div className="col-12 col-md-6 col-xl-3 mb-5">
                             <div className="card">
                                 <div className="card-body">
                                     <p><img className="houseImage" height="200" src={`img/${item.image}`} /></p>

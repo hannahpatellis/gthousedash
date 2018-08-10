@@ -12,17 +12,17 @@ h1.title{
 h5.houseName{
     font-family:'Montserrat', Helvetica, sans-serif;
     text-align:center;
-    font-size:24px;
+    font-size:20px;
 }
 h6.houseMaster{
     font-family:Helvetica, Arial, sans-serif;
     text-align:center;
-    font-size:14px;
+    font-size:13px;
 }
 h1.housePoints{
     font-family:'Montserrat', Helvetica, sans-serif;
     text-align:center;
-    font-size:90px;
+    font-size:80px;
 }
 img.houseImage{
     text-align:center;
