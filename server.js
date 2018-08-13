@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
 const mongojs = require("mongojs");
-require('dotenv').config()
+require('dotenv').config();
 const PORT = process.env.PORT || 3001;
 const app = express();
 
@@ -41,6 +41,14 @@ app.post("/api/subtract", (req, res) => {
       res.status(200).end();
     });
   });
+});
+
+app.post("/api/pwd", (req, res) => {
+  if(req.body.password === process.env.PASS){
+    res.json({ success: true });
+  } else {
+    res.json({ success: false });
+  }
 });
 
 app.get("/api/get", (req, res) => {

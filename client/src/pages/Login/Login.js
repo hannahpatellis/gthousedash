@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
+import API from "../../utils/API";
 
 class Login extends Component {
     state = {
@@ -8,11 +9,14 @@ class Login extends Component {
     }
 
     handleSubmit = () => {
-        if (this.state.password === "youaregay") {
-            sessionStorage.setItem("auth", "yes");
-            console.log("preformed");
-            this.setState({ loggedIn: true });
-        }
+        API.comparePassword(this.state.password).then(res => {
+            if(res.data.success){
+                sessionStorage.setItem("auth", "yes");
+                this.setState({ loggedIn: true });
+            } else {
+                alert("That's not the right password");
+            }
+        });
     }
 
     handleOnChange = e => {
@@ -21,7 +25,6 @@ class Login extends Component {
 
     componentWillMount(){
         const authFromSS = sessionStorage.getItem("auth");
-        console.log(authFromSS)
         if(authFromSS === "yes"){
             this.setState({loggedIn:true});
         }
@@ -39,7 +42,7 @@ class Login extends Component {
                                 <div className="card-body">
                                     <p><img className="houseImage" height="200" src="img/mern.png" /></p>
                                     <div class="input-group mb-3">
-                                        <input type="password" class="form-control" onChange={this.handleOnChange} value={this.state.password} placeholder="What's the secret passphrase" />
+                                        <input type="password" className="form-control" onChange={this.handleOnChange} value={this.state.password} placeholder="What's the secret passphrase" />
                                         <div className="input-group-append">
                                             <button className="btn btn-outline-secondary" onClick={this.handleSubmit} type="button">Login</button>
                                         </div>

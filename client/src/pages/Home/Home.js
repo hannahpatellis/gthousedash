@@ -8,11 +8,19 @@ class Home extends Component {
 
     getData = () => {
         API.getPoints()
-            .then(res =>
+            .then(res => {
+                const data = res.data.sort((a,b) => {
+                    if (a.points > b.points)
+                        return -1;
+                    if (a.points < b.points)
+                        return 1;
+                    return 0;
+                });
+                console.log(data);
                 this.setState({
-                    data: res.data
-                })
-            )
+                    data: data
+                });
+            })
             .catch(err => console.log(err));
     }
 
@@ -26,10 +34,15 @@ class Home extends Component {
                 <div className="row mx-5 my-5">
                     <h1 className="title">Georgia Tech Coding Bootcamp House Points</h1>
                 </div>
-                <div className="row mx-5 mt-5">
-                    {this.state.data ? this.state.data.map(item => (
+                <div className="row mx-5 mt-5 align-items-center">
+                    {this.state.data ? this.state.data.map((item, i) => (
                         <div className="col-12 col-md-6 col-xl-3 mb-5">
                             <div className="card">
+                                {i === 0 ? (
+                                    <div className="card-header text-center">
+                                        🏆 {item.house} is Currently in First Place 🏆
+                                    </div>
+                                ) : "" }
                                 <div className="card-body">
                                     <p><img className="houseImage" height="200" src={`img/${item.image}`} /></p>
                                     <h5 className="houseName">{item.house}</h5>

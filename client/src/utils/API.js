@@ -9,5 +9,8 @@ export default {
   },
   getPoints: function() {
     return axios.get("/api/get");
+  },
+  comparePassword: function(password) {
+    return axios.post("/api/pwd", { password: password });
   }
 };
