@@ -16,7 +16,6 @@ class Home extends Component {
                         return 1;
                     return 0;
                 });
-                console.log(data);
                 this.setState({
                     data: data
                 });
@@ -32,11 +31,11 @@ class Home extends Component {
         return (
             <div className="container-fluid">
                 <div className="row mx-5 my-5">
-                    <h1 className="title">Georgia Tech Coding Bootcamp House Points</h1>
+                    <h1 className="title"><span className="mr-2"><img className="school-logo-image" src="./img/school-logo.png" alt="Georgia Tech" /></span> Coding Bootcamp House Points</h1>
                 </div>
-                <div className="row mx-5 mt-5 align-items-center">
+                <div className="row mx-xl-5 mx-sm-1 mt-6 mb-5 align-items-center">
                     {this.state.data ? this.state.data.map((item, i) => (
-                        <div className="col-12 col-md-6 col-xl-3 mb-5">
+                        <div className="col-12 col-md-6 col-xl-3 mb-5" key={item.house}>
                             <div className="card">
                                 {i === 0 ? (
                                     <div className="card-header text-center">
@@ -53,6 +52,9 @@ class Home extends Component {
                         </div>
                     )) : ""}
                 </div>
+                <nav className="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark">
+                    <span className="text-white"><strong><span role="img" aria-label="badge">🎖 Current challenge</span></strong> 15 points to the largest study group by 10pm sunday</span>
+                </nav>
             </div>
         );
     }

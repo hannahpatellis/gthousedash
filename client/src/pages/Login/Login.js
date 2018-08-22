@@ -5,7 +5,7 @@ import API from "../../utils/API";
 class Login extends Component {
     state = {
         password: "",
-        username: "",
+        username: "user",
         loggedIn: false
     }
 
@@ -42,22 +42,6 @@ class Login extends Component {
                     }
                 }).catch(err => console.log(err));
         }
-        // const authFromSS = sessionStorage.getItem("auth");
-        // if(authFromSS === "yes"){
-        //     this.setState({loggedIn:true});
-        // }
-
-        // console.log('Will Mount');
-        // const tokenFromSS = ;
-        // const userFromSS = sessionStorage.getItem("user");
-        // let success = false;
-        // API.validate(tokenFromSS, userFromSS)
-        //     .then(res => {
-        //         console.log(res.data.success);
-        //         if(res.data.success === true){
-        //             this.setState({ loggedIn: true });
-        //         }
-        //     }).catch(err => console.log(err));
     }
 
     render() {
@@ -67,14 +51,15 @@ class Login extends Component {
             ) : (
                 <div className="container">
                     <div className="row justify-content-center mt-5">
-                        <div className="col-5 ">
-                            <div className="card">
+                        <div className="col-xl-5 col-sm-12 mt-5">
+                            <div className="card mt-6">
                                 <div className="card-body">
-                                    <p><img className="houseImage" height="200" src="img/mern.png" alt="MERNistry of Magic" /></p>
-                                    <div className="input-group mb-3">
+                                    <span className="d-flex justify-content-center mt-3"><img className="houseImage" height="200" src="img/mern.png" alt="MERNistry of Magic" /></span>
+                                    {/* To add individual user name support for logging purposes, just add these lines and change default `username` state to a blank string */}
+                                    {/* <div className="input-group mb-3">
                                         <input type="text" className="form-control" onChange={this.handleOnChange} value={this.state.username} name="username" placeholder="Username" />
-                                    </div>
-                                    <div className="input-group mb-3">
+                                    </div> */}
+                                    <div className="input-group mb-3 mt-5">
                                         <input type="password" className="form-control" onChange={this.handleOnChange} onKeyPress={this.handleKeyPress} value={this.state.password} name="password" placeholder="Password" />
                                         <div className="input-group-append">
                                             <button className="btn btn-outline-secondary" onClick={this.handleSubmit} type="submit">Login</button>

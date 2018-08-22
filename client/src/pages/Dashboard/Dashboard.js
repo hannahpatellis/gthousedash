@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import API from "../../utils/API";
 
 class Dashboard extends Component {
@@ -59,12 +59,10 @@ class Dashboard extends Component {
         return (
             this.state.loggedIn ? (
                 <div className="container-fluid">
-                    <div className="row mx-5 my-5">
-                        <div className="xx-nav-container">
-                            <div className="xx-left"><h1 className="title">GT House Points Dashboard</h1></div> <div className="xx-right"><button type="button" onClick={this.logout} className="btn btn-outline-light">Logout</button></div>
-                        </div>
+                    <div className="row mx-5 my-5 align-items-start">
+                        <h1 className="title"><span className="mr-2"><img className="school-logo-image" src="./img/school-logo.png" alt="Georgia Tech" /></span> House Points Dashboard</h1>
                     </div>
-                    <div className="row mx-5 mt-5">
+                    <div className="row mx-xl-5 mx-sm-1 mt-6 mb-5 align-items-center">
                         {this.state.data ? this.state.data.map(item => (
                             <div className="col-12 col-md-6 col-xl-3 mb-5" key={item.house}>
                                 <div className="card">
@@ -85,12 +83,20 @@ class Dashboard extends Component {
                             </div>
                         )) : ""}
                     </div>
+                    <nav className="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark">
+                        <button type="button" onClick={this.logout} className="btn btn-outline-light">Logout</button>
+                        <span className="ml-3 text-white">You're logged in as {this.state.currentUser.substr(0,1).toUpperCase() + this.state.currentUser.substr(1,this.state.currentUser.length)}</span>
+                    </nav>
                 </div>
             ) : (
                 <div className="container-fluid">
                     <div className="row mx-5 my-5">
                         <h1 className="title">You need to be logged in to view this page</h1>
                     </div>
+                    <nav className="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark">
+                        <Link to="/"><button type="button" className="btn btn-light mr-3">Scoreboard</button></Link>
+                        <Link to="/login"><button type="button" className="btn btn-outline-light">Login</button></Link>
+                    </nav>
                 </div>
             )
         );
