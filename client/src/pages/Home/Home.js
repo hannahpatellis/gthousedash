@@ -40,11 +40,11 @@ class Home extends Component {
                             <div className="card">
                                 {i === 0 ? (
                                     <div className="card-header text-center">
-                                        🏆 {item.house} is Currently in First Place 🏆
+                                        <span role="img" aria-label="Trophy">🏆</span> {item.house} is Currently in First Place <span role="img" aria-label="Trophy">🏆</span>
                                     </div>
                                 ) : "" }
                                 <div className="card-body">
-                                    <p><img className="houseImage" height="200" src={`img/${item.image}`} /></p>
+                                    <p><img className="houseImage" height="200" src={`img/${item.image}`} alt={item.house} /></p>
                                     <h5 className="houseName">{item.house}</h5>
                                     <h6 className="houseMaster mb-2 text-muted">House Master: {item.master}</h6>
                                     <h1 className="housePoints">{item.points}</h1>

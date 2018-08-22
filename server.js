@@ -43,7 +43,7 @@ const makeToken = user => {
   db.users.update({user: user}, {$push: {tokens: {token: token, expires: expires}}}, (err, results) => {
     if(err) throw err;
   });
-  return [token, expires];
+  return token;
 };
 
 // Routes
@@ -52,7 +52,7 @@ app.post("/api/add", (req, res) => {
     if(err) throw err;
     let currentPoints = parseInt(results[0].points);
     let revisedPoints = currentPoints + 1;
-    dbLog("testadd", 1, req.body.house);
+    dbLog(req.body.user, 1, req.body.house);
     db.houses.update({house: req.body.house}, {$set: {points: revisedPoints}}, () => {
       res.status(200).end();
     });
@@ -64,10 +64,17 @@ app.post("/api/subtract", (req, res) => {
     if(err) throw err;
     let currentPoints = parseInt(results[0].points);
     let revisedPoints = currentPoints - 1;
-    dbLog("testsub", -1, req.body.house);
+    dbLog(req.body.user, -1, req.body.house);
     db.houses.update({house: req.body.house}, {$set: {points: revisedPoints}}, () => {
       res.status(200).end();
     });
+  });
+});
+
+app.get("/api/get", (req, res) => {
+  db.houses.find({}, (err, results) => {
+    if(err) throw err;
+    res.send(results).end();
   });
 });
 
@@ -77,25 +84,27 @@ app.post("/api/auth", (req, res) => {
   }else{
     db.users.find({user: req.body.user}, (err, results) => {
       if(err) throw err;
-      bcrypt.compare(req.body.password, results[0].password, function(err, result) {
-        if(err) throw err;
-        if(result === true){
-          const token = makeToken(req.body.user);
-          res.json({ success: true, token: token });
-        }else if(result === false){
-          res.json({ success: false });
-        }else{
-          res.json({ success: false });
-        }
-      });
+      if(!results[0]){
+        res.json({ success: false });
+      }else{
+        bcrypt.compare(req.body.password, results[0].password, function(err, result) {
+          if(err) throw err;
+          if(result === true){
+            const token = makeToken(req.body.user);
+            res.json({ success: true, token: token, user: req.body.user });
+          }else if(result === false){
+            res.json({ success: false });
+          }else{
+            res.json({ success: false });
+          }
+        });
+      }
     });
   }
 });
 
 app.post("/api/validate", (req, res) => {
-  let userToken;
   let userExpire;
-  let user;
   let tokenFound = false;
 
   if(!req.body.token || !req.body.user){
@@ -107,9 +116,7 @@ app.post("/api/validate", (req, res) => {
       results[0].tokens.forEach(e => {
         if(e.token === req.body.token){
           tokenFound = true;
-          userToken = e.token;
           userExpire = e.expires;
-          user = results[0].user;
         }
       });
 
@@ -135,13 +142,6 @@ app.post("/api/validate", (req, res) => {
 //     res.json({ hash: hash });
 //   });
 // });
-
-app.get("/api/get", (req, res) => {
-  db.houses.find({}, (err, results) => {
-    if(err) throw err;
-    res.send(results).end();
-  });
-});
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "./client/build/index.html"));
