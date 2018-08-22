@@ -59,3 +59,9 @@ p.challenge-text {
         font-size:1rem;
     }
 }
+
+@media only screen and (max-width:1225px) {
+    .mb-6 {
+        margin-bottom: 8rem!important;
+    }
+}

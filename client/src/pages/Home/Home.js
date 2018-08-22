@@ -3,7 +3,8 @@ import API from "../../utils/API";
 
 class Home extends Component {
     state = {
-        data: ""
+        data: "",
+        challenge: ""
     };
 
     getData = () => {
@@ -24,6 +25,10 @@ class Home extends Component {
     }
 
     componentWillMount() {
+        API.getChallenges()
+            .then(res => {
+                this.setState({ challenge: res.data.challenge });
+            });
         this.getData();
     }
 
@@ -53,7 +58,7 @@ class Home extends Component {
                     )) : ""}
                 </div>
                 <nav className="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark">
-                    <span className="text-white"><strong><span role="img" aria-label="badge">🎖 Current challenge</span></strong> 15 points to the largest study group by 10pm sunday</span>
+                    <span className="text-white"><strong><span role="img" aria-label="badge">🎖 Current challenge</span></strong> {this.state.challenge}</span>
                 </nav>
             </div>
         );

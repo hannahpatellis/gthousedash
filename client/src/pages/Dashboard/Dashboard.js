@@ -6,8 +6,17 @@ class Dashboard extends Component {
     state = {
         data: "",
         currentUser: "",
+        currentChallenge: "",
+        newChallenge: "",
         loggedIn: false
     };
+
+    getChallenge = () => {
+        API.getChallenges()
+            .then(res => {
+                this.setState({ currentChallenge: res.data.challenge });
+            });
+    }
 
     getData = () => {
         API.getPoints()
@@ -20,7 +29,7 @@ class Dashboard extends Component {
     }
 
     handleIncrease = house => {
-        API.addPoint(house, this.state.currentUser)
+        API.addPoint(house, this.state.currentUser, sessionStorage.getItem("token"))
             .then(res => {
                 this.getData();
             })
@@ -28,11 +37,28 @@ class Dashboard extends Component {
     }
 
     handleDecrease = house => {
-        API.subtractPoint(house, this.state.currentUser)
+        API.subtractPoint(house, this.state.currentUser, sessionStorage.getItem("token"))
             .then(res => {
                 this.getData();
             })
             .catch(err => console.log(err));
+    }
+
+    handleSubmit = e => {
+        API.postChallenge(this.state.newChallenge, sessionStorage.getItem("user"), sessionStorage.getItem("token"))
+            .then(res => {
+                this.getChallenge();
+            });
+    }
+
+    handleOnChange = e => {
+        this.setState({ [e.target.name]: e.target.value });
+    }
+
+    handleKeyPress = e => {
+        if (e.key === 'Enter') {
+            this.handleSubmit();
+        }
     }
 
     logout = () => {
@@ -51,6 +77,7 @@ class Dashboard extends Component {
                         this.setState({loggedIn: true, currentUser: userFromSS});
                     }
                     this.getData();
+                    this.getChallenge();
                 }).catch(err => console.log(err));
         }
     }
@@ -62,7 +89,7 @@ class Dashboard extends Component {
                     <div className="row mx-5 my-5 align-items-start">
                         <h1 className="title"><span className="mr-2"><img className="school-logo-image" src="./img/school-logo.png" alt="Georgia Tech" /></span> House Points Dashboard</h1>
                     </div>
-                    <div className="row mx-xl-5 mx-sm-1 mt-6 mb-5 align-items-center">
+                    <div className="row mx-xl-5 mx-sm-1 mt-5 align-items-center">
                         {this.state.data ? this.state.data.map(item => (
                             <div className="col-12 col-md-6 col-xl-3 mb-5" key={item.house}>
                                 <div className="card">
@@ -82,6 +109,14 @@ class Dashboard extends Component {
                                 </div>
                             </div>
                         )) : ""}
+                    </div>
+                    <div className="alert mx-xl-5 mb-6 alert-secondary">
+                        <div className="input-group">
+                            <input type="text" className="form-control" onChange={this.handleOnChange} onKeyPress={this.handleKeyPress} value={this.state.newChallenge} name="newChallenge" placeholder={`Current challenge: ${this.state.currentChallenge}`} />
+                            <div className="input-group-append">
+                                <button className="btn btn-outline-secondary" onClick={this.handleSubmit} type="submit">Post</button>
+                            </div>
+                        </div>
                     </div>
                     <nav className="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark">
                         <button type="button" onClick={this.logout} className="btn btn-outline-light">Logout</button>

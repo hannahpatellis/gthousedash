@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
 const mongojs = require("mongojs");
+const ObjectId = require("mongodb").ObjectID;
 require('dotenv').config();
 const PORT = process.env.PORT || 3001;
 const bcrypt = require('bcrypt');
@@ -15,18 +16,31 @@ if (process.env.NODE_ENV === "production") {
 }
 
 // Mongo connection
-const db = mongojs(process.env.MONGODB_URI, ["houses", "users", "log"]);
+const db = mongojs(process.env.MONGODB_URI, ["houses", "users", "log", "challenge"]);
 
 db.on("error", error => {
   console.log("Database Error: ", error);
 });
 
-// Mongo log function
+// Mongo log point change
 const dbLog = (user, points, house) => {
   const logEntry = {
     user: user,
     points: points,
     house: house,
+    ts: new Date().toString()
+  };
+  db.log.save(logEntry, (err, results) => {
+    if(err) throw err;
+    return true;
+  });
+};
+
+// Mongo log new challenge
+const dbChallengeLog = (user, challenge) => {
+  const logEntry = {
+    user: user,
+    challenge: challenge,
     ts: new Date().toString()
   };
   db.log.save(logEntry, (err, results) => {
@@ -46,12 +60,19 @@ const makeToken = user => {
   return token;
 };
 
+// Validate API calls using token
+const validateToken = (user, token) => {
+  console.log(token);
+  console.log(user);
+};
+
 // Routes
 app.post("/api/add", (req, res) => {
   db.houses.find({house: req.body.house}, (err, results) => {
     if(err) throw err;
     let currentPoints = parseInt(results[0].points);
     let revisedPoints = currentPoints + 1;
+    validateToken(req.body.user, req.body.token);
     dbLog(req.body.user, 1, req.body.house);
     db.houses.update({house: req.body.house}, {$set: {points: revisedPoints}}, () => {
       res.status(200).end();
@@ -64,6 +85,7 @@ app.post("/api/subtract", (req, res) => {
     if(err) throw err;
     let currentPoints = parseInt(results[0].points);
     let revisedPoints = currentPoints - 1;
+    validateToken(req.body.user, req.body.token);
     dbLog(req.body.user, -1, req.body.house);
     db.houses.update({house: req.body.house}, {$set: {points: revisedPoints}}, () => {
       res.status(200).end();
@@ -75,6 +97,20 @@ app.get("/api/get", (req, res) => {
   db.houses.find({}, (err, results) => {
     if(err) throw err;
     res.send(results).end();
+  });
+});
+
+app.post("/api/challenge", (req, res) => {
+  dbChallengeLog(req.body.user, req.body.challenge);
+  db.challenge.update({"_id": ObjectId("5b7cf1d6b48b0921af336561")}, {$set: {challenge: req.body.challenge}}, () => {
+    res.status(200).end();
+  });
+});
+
+app.get("/api/getchallenges", (req, res) => {
+  db.challenge.find({"_id": ObjectId("5b7cf1d6b48b0921af336561")}, (err, results) => {
+    if(err) throw err;
+    res.json({ challenge: results[0].challenge });
   });
 });
 
