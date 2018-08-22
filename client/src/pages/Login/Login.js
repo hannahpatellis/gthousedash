@@ -52,7 +52,7 @@ class Login extends Component {
                 <div className="container">
                     <div className="row justify-content-center mt-5">
                         <div className="col-xl-5 col-sm-12 mt-5">
-                            <div className="card mt-6">
+                            <div className="card mt-6 mb-5">
                                 <div className="card-body">
                                     <span className="d-flex justify-content-center mt-3"><img className="houseImage" height="200" src="img/mern.png" alt="MERNistry of Magic" /></span>
                                     {/* To add individual user name support for logging purposes, just add these lines and change default `username` state to a blank string */}

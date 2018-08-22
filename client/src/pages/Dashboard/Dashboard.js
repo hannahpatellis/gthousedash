@@ -15,7 +15,8 @@ class Dashboard extends Component {
         API.getChallenges()
             .then(res => {
                 this.setState({ currentChallenge: res.data.challenge });
-            });
+            })
+            .catch(err => console.log(err));
     }
 
     getData = () => {
