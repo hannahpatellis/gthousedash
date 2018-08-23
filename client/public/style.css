@@ -1,5 +1,6 @@
 body{
     background:#232323;
+    font-family:'Montserrat', Helvetica, sans-serif;
 }
 p{
     text-align:center;
@@ -25,9 +26,24 @@ h1.housePoints{
     text-align:center;
     font-size:80px;
 }
-img.houseImage{
+h2.houseWeekPoints{
+    font-family:'Montserrat', Helvetica, sans-serif;
     text-align:center;
-    margin: 0 auto;
+    font-size:20px;
+}
+span.input-group-text{
+    font-family:'Montserrat', Helvetica, sans-serif;
+}
+btn{
+    font-family:'Montserrat', Helvetica, sans-serif;
+}
+button.btn-owl{
+    justify-content: center;
+}
+div.input-group{
+    justify-content: center;
+}
+img.houseImage{
     width:200px;
 }
 img.school-logo-image {

@@ -45,6 +45,22 @@ class Dashboard extends Component {
             .catch(err => console.log(err));
     }
 
+    handleReset = house => {
+        API.resetWeekPoints(house, this.state.currentUser, sessionStorage.getItem("token"))
+            .then(res => {
+                this.getData();
+            })
+            .catch(err => console.log(err));
+    }
+
+    handleOwl = house => {
+        API.giveOwl(house, this.state.currentUser, sessionStorage.getItem("token"))
+            .then(res => {
+                this.getData();
+            })
+            .catch(err => console.log(err));
+    }
+
     handleSubmit = e => {
         API.postChallenge(this.state.newChallenge, sessionStorage.getItem("user"), sessionStorage.getItem("token"))
             .then(res => {
@@ -65,17 +81,17 @@ class Dashboard extends Component {
     logout = () => {
         sessionStorage.removeItem("token");
         sessionStorage.removeItem("user");
-        this.setState({loggedIn: false, currentUser: ""});
+        this.setState({ loggedIn: false, currentUser: "" });
     }
 
     componentWillMount() {
         const tokenFromSS = sessionStorage.getItem("token");
         const userFromSS = sessionStorage.getItem("user");
-        if(tokenFromSS && userFromSS){
+        if (tokenFromSS && userFromSS) {
             API.validate(tokenFromSS, userFromSS)
                 .then(res => {
-                    if(res.data.success === true){
-                        this.setState({loggedIn: true, currentUser: userFromSS});
+                    if (res.data.success === true) {
+                        this.setState({ loggedIn: true, currentUser: userFromSS });
                     }
                     this.getData();
                     this.getChallenge();
@@ -95,17 +111,36 @@ class Dashboard extends Component {
                             <div className="col-12 col-md-6 col-xl-3 mb-5" key={item.house}>
                                 <div className="card">
                                     <div className="card-body">
-                                        <p><img className="houseImage" height="200" src={`img/${item.image}`} alt={item.house} /></p>
+                                        <p><img className="houseImage" height="200" src={item.owl ? `img/${item.owlimage}` : `img/${item.image}`} alt={item.house} /></p>
                                         <h5 className="houseName">{item.house}</h5>
                                         <h6 className="houseMaster mb-2 text-muted">House Master: {item.master}</h6>
                                         <h1 className="housePoints">{item.points}</h1>
-                                        <hr />
                                         <p>
                                             <div className="btn-group btn-group-lg">
                                                 <button type="button" className="btn btn-secondary" onClick={() => this.handleDecrease(item.house)}>-</button>
                                                 <button type="button" className="btn btn-secondary" onClick={() => this.handleIncrease(item.house)}>+</button>
                                             </div>
                                         </p>
+                                        <hr />
+                                        <div className="row">
+                                            <div className="col">
+                                                <p>Points this week</p>
+                                                <div className="input-group input-group-md">
+                                                    <div className="input-group-prepend">
+                                                        <span className="input-group-text">{item.weekpoints}</span>
+                                                    </div>
+                                                    <div className="input-group-append">
+                                                        <button className="btn btn-secondary" type="button" onClick={() => this.handleReset(item.house)}>Reset</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col">
+                                                <p>Give the owl</p>
+                                                <p>
+                                                    <button className={item.owl ? "btn btn-secondary" : "btn btn-outline-secondary"} type="button" onClick={() => this.handleOwl(item.house)}>{item.owl ? "Has owl" : "Give owl"}</button>
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -121,20 +156,20 @@ class Dashboard extends Component {
                     </div>
                     <nav className="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark">
                         <button type="button" onClick={this.logout} className="btn btn-outline-light">Logout</button>
-                        <span className="ml-3 text-white">You're logged in as {this.state.currentUser.substr(0,1).toUpperCase() + this.state.currentUser.substr(1,this.state.currentUser.length)}</span>
+                        <span className="ml-3 text-white">You're logged in as {this.state.currentUser.substr(0, 1).toUpperCase() + this.state.currentUser.substr(1, this.state.currentUser.length)}</span>
                     </nav>
                 </div>
             ) : (
-                <div className="container-fluid">
-                    <div className="row mx-5 my-5">
-                        <h1 className="title">You need to be logged in to view this page</h1>
+                    <div className="container-fluid">
+                        <div className="row mx-5 my-5">
+                            <h1 className="title">You need to be logged in to view this page</h1>
+                        </div>
+                        <nav className="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark">
+                            <Link to="/"><button type="button" className="btn btn-light mr-3">Scoreboard</button></Link>
+                            <Link to="/login"><button type="button" className="btn btn-outline-light">Login</button></Link>
+                        </nav>
                     </div>
-                    <nav className="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark">
-                        <Link to="/"><button type="button" className="btn btn-light mr-3">Scoreboard</button></Link>
-                        <Link to="/login"><button type="button" className="btn btn-outline-light">Login</button></Link>
-                    </nav>
-                </div>
-            )
+                )
         );
     }
 }
