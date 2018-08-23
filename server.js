@@ -102,10 +102,12 @@ app.post("/api/add", (req, res) => {
   db.houses.find({ house: req.body.house }, (err, results) => {
     if (err) throw err;
     let currentPoints = parseInt(results[0].points);
+    let currentWeekPoints = parseInt(results[0].weekpoints);
     let revisedPoints = currentPoints + 1;
+    let revisedWeekPoints = currentWeekPoints + 1;
     validateToken(req.body.user, req.body.token);
     dbLog(req.body.user, 1, req.body.house);
-    db.houses.update({ house: req.body.house }, { $set: { points: revisedPoints } }, () => {
+    db.houses.update({ house: req.body.house }, { $set: { points: revisedPoints, weekpoints: revisedWeekPoints } }, () => {
       res.status(200).end();
     });
   });
@@ -115,10 +117,29 @@ app.post("/api/subtract", (req, res) => {
   db.houses.find({ house: req.body.house }, (err, results) => {
     if (err) throw err;
     let currentPoints = parseInt(results[0].points);
+    let currentWeekPoints = parseInt(results[0].weekpoints);
     let revisedPoints = currentPoints - 1;
+    let revisedWeekPoints = currentWeekPoints - 1;
     validateToken(req.body.user, req.body.token);
     dbLog(req.body.user, -1, req.body.house);
-    db.houses.update({ house: req.body.house }, { $set: { points: revisedPoints } }, () => {
+    db.houses.update({ house: req.body.house }, { $set: { points: revisedPoints, weekpoints: revisedWeekPoints } }, () => {
+      res.status(200).end();
+    });
+  });
+});
+
+app.post("/api/reset", (req, res) => {
+  db.houses.update({ house: req.body.house }, { $set: { weekpoints: 0 } }, (err) => {
+    if(err) throw err;
+    res.status(200).end();
+  });
+});
+
+app.post("/api/owl", (req, res) => {
+  db.houses.update({}, { $set: { owl: false } }, { multi: true }, (err) => {
+    if(err) throw err;
+    db.houses.update({ house: req.body.house }, { $set: { owl: true } }, (err) => {
+      if(err) throw err;
       res.status(200).end();
     });
   });

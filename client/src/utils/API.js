@@ -7,6 +7,12 @@ export default {
   subtractPoint: function(house, user, token) {
     return axios.post("/api/subtract", { house: house, user: user, token: token });
   },
+  resetWeekPoints: function(house, user, token) {
+    return axios.post("/api/reset", { house: house, user: user, token: token });
+  },
+  giveOwl: function(house, user, token) {
+    return axios.post("/api/owl", { house: house, user: user, token: token });
+  },
   getPoints: function() {
     return axios.get("/api/get");
   },
