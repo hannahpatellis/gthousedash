@@ -225,6 +225,8 @@ app.post("/api/validate", (req, res) => {
   }
 });
 
+// HASHING ROUTE
+// Uncomment this to make the hash function available for making new users
 // app.post("/api/hash", (req, res) => {
 //   bcrypt.hash(req.body.password, 10, function(err, hash) {
 //     res.json({ hash: hash });
