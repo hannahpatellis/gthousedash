@@ -8,29 +8,44 @@ class Dashboard extends Component {
         currentUser: "",
         currentChallenge: "",
         newChallenge: "",
-        loggedIn: false
+        loggedIn: false,
+        Githubblepuff: 0,
+        Ravenclosure: 0,
+        SlytherindentYourCode: 0,
+        GryffinDOM: 0
     };
 
-    getChallenge = () => {
-        API.getChallenges()
-            .then(res => {
-                this.setState({ currentChallenge: res.data.challenge });
-            })
-            .catch(err => console.log(err));
-    }
+    // getChallenge = () => {
+    //     API.getChallenges()
+    //         .then(res => {
+    //             this.setState({ currentChallenge: res.data.challenge });
+    //         })
+    //         .catch(err => console.log(err));
+    // }
 
     getData = () => {
         API.getPoints()
-            .then(res =>
+            .then(res => {
                 this.setState({
                     data: res.data
                 })
+                console.log(this.state.data);
+            }
             )
             .catch(err => console.log(err));
     }
 
     handleIncrease = house => {
-        API.addPoint(house, this.state.currentUser, sessionStorage.getItem("token"))
+        API.addPoint(house, this.state.currentUser, 1, sessionStorage.getItem("token"))
+            .then(res => {
+                this.getData();
+            })
+            .catch(err => console.log(err));
+    }
+
+    handleSpecificIncrease = house => {
+        this.setState({ [house]: 0 });
+        API.addPoint(house, this.state.currentUser, this.state[house], sessionStorage.getItem("token"))
             .then(res => {
                 this.getData();
             })
@@ -61,22 +76,26 @@ class Dashboard extends Component {
             .catch(err => console.log(err));
     }
 
-    handleSubmit = e => {
-        API.postChallenge(this.state.newChallenge, sessionStorage.getItem("user"), sessionStorage.getItem("token"))
-            .then(res => {
-                this.getChallenge();
-            });
-    }
-
-    handleOnChange = e => {
+    handlePointsInputChange = e => {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-    handleKeyPress = e => {
-        if (e.key === 'Enter') {
-            this.handleSubmit();
-        }
-    }
+    // handleSubmit = e => {
+    //     API.postChallenge(this.state.newChallenge, sessionStorage.getItem("user"), sessionStorage.getItem("token"))
+    //         .then(res => {
+    //             this.getChallenge();
+    //         });
+    // }
+
+    // handleOnChange = e => {
+    //     this.setState({ [e.target.name]: e.target.value });
+    // }
+
+    // handleKeyPress = e => {
+    //     if (e.key === 'Enter') {
+    //         this.handleSubmit();
+    //     }
+    // }
 
     logout = () => {
         sessionStorage.removeItem("token");
@@ -94,7 +113,7 @@ class Dashboard extends Component {
                         this.setState({ loggedIn: true, currentUser: userFromSS });
                     }
                     this.getData();
-                    this.getChallenge();
+                    // this.getChallenge();
                 }).catch(err => console.log(err));
         }
     }
@@ -115,12 +134,24 @@ class Dashboard extends Component {
                                         <h5 className="houseName">{item.house}</h5>
                                         <h6 className="houseMaster mb-2 text-muted">House Master: {item.master}</h6>
                                         <h1 className="housePoints">{item.points}</h1>
-                                        <p>
+                                        <div className="center-this">
                                             <div className="btn-group btn-group-lg">
                                                 <button type="button" className="btn btn-secondary" onClick={() => this.handleDecrease(item.house)}>-</button>
                                                 <button type="button" className="btn btn-secondary" onClick={() => this.handleIncrease(item.house)}>+</button>
                                             </div>
-                                        </p>
+                                        </div>
+                                        <div className="center-this">
+                                            <div className="row">
+                                                <div className="col-8 offset-2">
+                                                    <div className="input-group mb-3">
+                                                        <input type="text" className="form-control" placeholder="Points" name={item.house} onChange={this.handlePointsInputChange} value={this.state[item.house]} />
+                                                        <div className="input-group-append">
+                                                            <button className="btn btn-outline-secondary" type="button" onClick={() => this.handleSpecificIncrease(item.house)}>Give</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <hr />
                                         <div className="row">
                                             <div className="col">
@@ -136,9 +167,9 @@ class Dashboard extends Component {
                                             </div>
                                             <div className="col">
                                                 <p>Give the owl</p>
-                                                <p>
+                                                <div className="center-this">
                                                     <button className={item.owl ? "btn btn-secondary" : "btn btn-outline-secondary"} type="button" onClick={() => this.handleOwl(item.house)}>{item.owl ? "Has owl" : "Give owl"}</button>
-                                                </p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -146,14 +177,14 @@ class Dashboard extends Component {
                             </div>
                         )) : ""}
                     </div>
-                    <div className="alert mx-xl-5 mb-6 alert-secondary">
+                    {/* <div className="alert mx-xl-5 mb-6 alert-secondary">
                         <div className="input-group">
                             <input type="text" className="form-control" onChange={this.handleOnChange} onKeyPress={this.handleKeyPress} value={this.state.newChallenge} name="newChallenge" placeholder={`Current challenge: ${this.state.currentChallenge}`} />
                             <div className="input-group-append">
                                 <button className="btn btn-outline-secondary" onClick={this.handleSubmit} type="submit">Post</button>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                     <nav className="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark">
                         <button type="button" onClick={this.logout} className="btn btn-outline-light">Logout</button>
                         <span className="ml-3 text-white">You're logged in as {this.state.currentUser.substr(0, 1).toUpperCase() + this.state.currentUser.substr(1, this.state.currentUser.length)}</span>

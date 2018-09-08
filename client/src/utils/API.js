@@ -1,8 +1,8 @@
 import axios from "axios";
 
 export default {
-  addPoint: function(house, user, token) {
-    return axios.post("/api/add", { house: house, user: user, token: token });
+  addPoint: function(house, user, points, token) {
+    return axios.post("/api/add", { house: house, user: user, token: token, points: points });
   },
   subtractPoint: function(house, user, token) {
     return axios.post("/api/subtract", { house: house, user: user, token: token });

@@ -25,10 +25,10 @@ class Home extends Component {
     }
 
     componentWillMount() {
-        API.getChallenges()
-            .then(res => {
-                this.setState({ challenge: res.data.challenge });
-            });
+        // API.getChallenges()
+        //     .then(res => {
+        //         this.setState({ challenge: res.data.challenge });
+        //     });
         this.getData();
     }
 
@@ -59,8 +59,11 @@ class Home extends Component {
                         </div>
                     )) : ""}
                 </div>
-                <nav className="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark">
+                {/* <nav className="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark">
                     <span className="text-white"><strong><span role="img" aria-label="badge">🎖 Current challenge</span></strong> {this.state.challenge}</span>
+                </nav> */}
+                <nav className="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark">
+                    <span className="text-white"><strong><span role="img" aria-label="badge">🎖 How can I earn points for the house cup?</span></strong> <a href="http://house-cup.netlify.com/">Click here to find out</a></span>
                 </nav>
             </div>
         );

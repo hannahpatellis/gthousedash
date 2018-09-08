@@ -1,0 +1,6 @@
+Authenticate API calls using username and token
+Write a README
+Add error handling if there is no user account
+Add case handling for username
+Refresh the challenge box when submitted
+Delete tokens on logout

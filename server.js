@@ -103,8 +103,8 @@ app.post("/api/add", (req, res) => {
     if (err) throw err;
     let currentPoints = parseInt(results[0].points);
     let currentWeekPoints = parseInt(results[0].weekpoints);
-    let revisedPoints = currentPoints + 1;
-    let revisedWeekPoints = currentWeekPoints + 1;
+    let revisedPoints = currentPoints + parseInt(req.body.points);
+    let revisedWeekPoints = currentWeekPoints + parseInt(req.body.points);
     validateToken(req.body.user, req.body.token);
     dbLog(req.body.user, 1, req.body.house);
     db.houses.update({ house: req.body.house }, { $set: { points: revisedPoints, weekpoints: revisedWeekPoints } }, () => {
