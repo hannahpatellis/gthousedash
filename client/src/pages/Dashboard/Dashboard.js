@@ -25,12 +25,10 @@ class Dashboard extends Component {
 
     getData = () => {
         API.getPoints()
-            .then(res => {
+            .then(res => 
                 this.setState({
                     data: res.data
                 })
-                console.log(this.state.data);
-            }
             )
             .catch(err => console.log(err));
     }
