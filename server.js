@@ -61,14 +61,16 @@ const makeToken = user => {
 };
 
 // Validate API calls using token
+/* This function currently returns undefined before finishing the if statement. */
 const validateToken = (user, token) => {
-  console.log("validateToken test, token: ", token);
-  console.log("validateToken test, user: ", user);
+  console.log("validateToken: Token: ", token);
+  console.log("validateToken: User: ", user);
 
   let userExpire;
   let tokenFound = false;
 
   if (!token || !user) {
+    console.log("validateToken: No token or no user. FAIL");
     return false;
   } else {
     db.users.find({ user: user }, (err, results) => {
@@ -81,16 +83,20 @@ const validateToken = (user, token) => {
         }
       });
 
-      if (tokenFound === true) {
+      if (tokenFound) {
         const currentTS = Date.now();
         if (currentTS > userExpire) {
+          console.log("validateToken: Today's timestamp is greater than the expiration timestamp. FAIL");
           return false;
         } else if (currentTS < userExpire) {
+          console.log("validateToken: Today's timestamp is less than the expiration timestamp. PASS");
           return true;
         }
       } else if (tokenFound === false) {
+        console.log("validateToken: No token found. FAIL");
         return false;
       } else {
+        console.log("validateToken: None of the conditionals passed. FAIL");
         return false;
       }
     });
@@ -105,7 +111,7 @@ app.post("/api/add", (req, res) => {
     let currentWeekPoints = parseInt(results[0].weekpoints);
     let revisedPoints = currentPoints + parseInt(req.body.points);
     let revisedWeekPoints = currentWeekPoints + parseInt(req.body.points);
-    validateToken(req.body.user, req.body.token);
+    console.log(validateToken(req.body.user, req.body.token));
     dbLog(req.body.user, parseInt(req.body.points), req.body.house);
     db.houses.update({ house: req.body.house }, { $set: { points: revisedPoints, weekpoints: revisedWeekPoints } }, () => {
       res.status(200).end();
@@ -120,7 +126,7 @@ app.post("/api/subtract", (req, res) => {
     let currentWeekPoints = parseInt(results[0].weekpoints);
     let revisedPoints = currentPoints - 1;
     let revisedWeekPoints = currentWeekPoints - 1;
-    validateToken(req.body.user, req.body.token);
+    console.log(validateToken(req.body.user, req.body.token));
     dbLog(req.body.user, -1, req.body.house);
     db.houses.update({ house: req.body.house }, { $set: { points: revisedPoints, weekpoints: revisedWeekPoints } }, () => {
       res.status(200).end();

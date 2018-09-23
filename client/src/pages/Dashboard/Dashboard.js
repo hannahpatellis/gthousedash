@@ -75,7 +75,12 @@ class Dashboard extends Component {
     }
 
     handlePointsInputChange = e => {
-        this.setState({ [e.target.name]: e.target.value });
+        if(isNaN(e.target.value)) {
+            alert("Your input needs to be a number.\nDon't break the system with that NaN stuff! 🤨");
+            this.setState({ [e.target.name]: 0 });
+        } else {
+            this.setState({ [e.target.name]: e.target.value });
+        }
     }
 
     // handleSubmit = e => {
